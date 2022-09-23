@@ -1,0 +1,61 @@
+オブジェクト指向
+（拡張性，保守性に優れたコードになる）
+（プラモデルがオブジェクト指向言語であるpythonのイメージ）
+オブジェクトとは
+クラスとは，データと機能を組み合わせる方法を提供する
+　（クラスの定義の仕方）
+
+class(クラス名):
+    def_init_(self):
+        (初期化時に用いたい処理)
+    （追加の関数）
+
+　（例）:名前・身長・体重というデータを持つ人間クラスの作成＋追加したい関数にBMIの計算処理を追加
+class Human:
+    def_init_(self):
+        self.name = ''
+        self.weight = 0.0
+        self.height = 0.0
+    def bmi_cal(self)
+        self.bmi = self.weight/self.height * 2
+
+Mao = Human()
+#Maoに具体的な情報を与える
+Mao.name = '真央'
+Mao.weight = 50
+Mao.height = 1.62
+
+#真央のBMIを算出
+Mao_bmi_cal()
+
+では，クラスで書いたのと関数で書いたのでは違いはないのでは？
+試しに以下に関数で書いてみる
+def bmi_cal(name, weight, height):
+    bmi = weight / height * 2
+    print(name, 'のBMI: ', round(bmi, 2))
+
+Mao_name = '真央'
+Mao_weight = 50
+Mao_height = 1.62
+
+bmi_cal(Mao_name, Mao_weight, Mao_height)
+
+違いとしては，'真央',50,1.62というデータ間の関係性にある！
+クラスでは同じ人間(Mao)が持つデータとして名前・体重・身長の間に関係性がありましたが、
+関数ではMao_name、Mao_weight、Mao_heightと別の変数で扱っているので、互いに関係性がありません。
+
+インスタンス化とは,クラス（型）を実体化すること
+（具体的な例）
+class Test:
+    def_init_(self, x):
+        self.x = x
+
+    def out(self):
+        print('x = {},format(self.x))
+
+if_name_ == "_main_":
+    test = Test(2)
+    test.out()
+
+*testはTestクラスのインスタンスであり，test(インスタンス)を用いてTestクラスのout()を呼んでいる
+selfにはインスタンス自身が入っている

@@ -1,0 +1,150 @@
+﻿/*pgmlib.h*/
+#include<stdlib.h>
+#include<string.h>
+
+/* 螳壽焚螳｣險 */
+#define MAX_IMAGESIZE       1280 /* 隲・ｳ陞ｳ螢ｹ笘・ｹｧ迢暦ｽｸ・ｦ郢晢ｽｻ隶難ｽｪ邵ｺ・ｮ隴崢陞滂ｽｧ騾包ｽｻ驍擾ｿｽ隰ｨ・ｰ */
+#define MAX_BRIGHTNESS       255 /* 隲・ｳ陞ｳ螢ｹ笘・ｹｧ蛹ｺ諤呵棔・ｧ鬮ｫ謇具ｽｪ・ｿ陋滂ｽ､ */
+#define GRAYLEVEL            256 /* 隲・ｳ陞ｳ螢ｹ笘・ｹｧ遏ｩ蝴ｴ髫ｱ・ｿ隰ｨ・ｰ(=隴崢陞滂ｽｧ鬮ｫ謇具ｽｪ・ｿ陋滂ｽ､+1) */
+#define MAX_FILENAME         256 /* 隲・ｳ陞ｳ螢ｹ笘・ｹｧ荵昴Ψ郢ｧ・｡郢ｧ・､郢晢ｽｫ陷ｷ髦ｪ・ｽ隴崢陞滂ｽｧ鬮滂ｽｷ */
+#define MAX_BUFFERSIZE       256 /* 陋ｻ・ｩ騾包ｽｨ邵ｺ蜷ｶ・狗ｹ晁・繝｣郢晁ｼ斐＜隴崢陞滂ｽｧ鬮滂ｽｷ */
+#define MAX_NUM_OF_IMAGES      5 /* 陋ｻ・ｩ騾包ｽｨ邵ｺ蜷ｶ・矩包ｽｻ陷剃ｸ奇ｿｽ隴ｫ螢ｽ辟・*/
+
+/* 螟ｧ蝓溷､画焚縺ｮ螳｣險 */
+/* 逕ｻ蜒上ョ繝ｼ繧ｿ image[n][x][y] */
+unsigned char image[MAX_NUM_OF_IMAGES][MAX_IMAGESIZE][MAX_IMAGESIZE];
+/* image[n] 縺ｮ讓ｪ蟷・・邵ｦ蟷・*/
+int width[MAX_NUM_OF_IMAGES], height[MAX_NUM_OF_IMAGES];
+
+/* 髢｢謨ｰ縺ｮ繝励Ο繝医ち繧､繝怜ｮ｣險 */
+/* 髫手ｪｿ逕ｻ蜒上ｒ蜈･蜉帙☆繧矩未謨ｰ */
+void load_image( int n, char name[] );
+  /* n:逕ｻ蜒冗分蜿ｷ・系ame[]:繝輔ぃ繧､繝ｫ蜷搾ｼ・"縺ｮ譎ゅ・繧ｭ繝ｼ繝懊・繝牙・蜉幢ｼ・/
+/* 髫手ｪｿ逕ｻ蜒上ｒ蜃ｺ蜉帙☆繧矩未謨ｰ*/
+void save_image( int n, char name[] );
+  /* n:逕ｻ蜒冗分蜿ｷ・系ame[]:繝輔ぃ繧､繝ｫ蜷搾ｼ・"縺ｮ譎ゅ・繧ｭ繝ｼ繝懊・繝牙・蜉幢ｼ・/
+/* 髫手ｪｿ逕ｻ蜒上ｒ繧ｳ繝斐・縺吶ｋ髢｢謨ｰ*/
+void copy_image( int n1, int n2 );
+  /* 逕ｻ蜒冗分蜿ｷNo.n1繧堤判蜒冗分蜿ｷNo.n2縺ｫ繧ｳ繝斐・縺吶ｋ */
+/* 髫手ｪｿ逕ｻ蜒上ｒ蛻晄悄蛹悶☆繧矩未謨ｰ*/
+void init_image( int n, unsigned char value );
+  /* 逕ｻ蜒冗分蜿ｷNo.n縺ｮ蜈ｨ逕ｻ邏縺ｮ髫手ｪｿ蛟､繧貞ｼｷ蛻ｶ逧・↓value(0・・55)縺ｫ縺吶ｋ */
+
+/* 髫手ｪｿ逕ｻ蜒上ｒ蜈･蜉帙☆繧矩未謨ｰ */
+void load_image( int n, char name[] )
+/* n:逕ｻ蜒冗分蜿ｷ・系ame[]:繝輔ぃ繧､繝ｫ蜷搾ｼ・"縺ｮ譎ゅ・繧ｭ繝ｼ繝懊・繝牙・蜉幢ｼ・/
+/* 讓ｪ蟷・ｼ檎ｸｦ蟷・・縺昴ｌ縺槭ｌ width[n], height[n]縺ｫ莉｣蜈･縺吶ｋ */
+{
+    char file_name[MAX_FILENAME]; /* 繝輔ぃ繧､繝ｫ蜷咲畑縺ｮ譁・ｭ怜・*/
+    char buffer[MAX_BUFFERSIZE];  /* 繝・・繧ｿ隱ｭ縺ｿ霎ｼ縺ｿ逕ｨ菴懈･ｭ螟画焚 */
+    FILE *fp; /* 繝輔ぃ繧､繝ｫ繝昴う繝ｳ繧ｿ */
+    int max_gray; /* 譛螟ｧ髫手ｪｿ蛟､ */
+    int x, y; /* 繝ｫ繝ｼ繝怜､画焚 */
+
+    /* 蜈･蜉帙ヵ繧｡繧､繝ｫ縺ｮ繧ｪ繝ｼ繝励Φ */
+    if ( name[0] == '\0' ){
+        printf("蜈･蜉帙ヵ繧｡繧､繝ｫ蜷・(*.pgm) : ");
+        scanf("%s",file_name);
+    } else strcpy( file_name, name );
+    if ( (fp = fopen( file_name, "rb" ))==NULL ){
+        printf("縺昴・蜷榊燕縺ｮ繝輔ぃ繧､繝ｫ縺ｯ蟄伜惠縺励∪縺帙ｓ.\n");
+        exit(1);
+    }
+    /* 繝輔ぃ繧､繝ｫ繧ｿ繧､繝励・遒ｺ隱・*/
+    fgets( buffer, MAX_BUFFERSIZE, fp );
+    if ( buffer[0] != 'P' || buffer[1] != '5' ){
+        printf("繝輔ぃ繧､繝ｫ縺ｮ繝輔か繝ｼ繝槭ャ繝医′ P5 縺ｨ縺ｯ逡ｰ縺ｪ繧翫∪縺・\n");
+        exit(1);
+    }
+    /* width[n], height[n] 縺ｮ莉｣蜈･・・縺九ｉ蟋九∪繧九さ繝｡繝ｳ繝医・隱ｭ縺ｿ鬟帙・縺呻ｼ・*/
+    width[n] = 0;    height[n] = 0;
+    while ( width[n] == 0 || height[n] == 0 ){
+        fgets( buffer, MAX_BUFFERSIZE, fp );
+        if ( buffer[0] != '#' )
+            sscanf( buffer, "%d %d", &width[n], &height[n] );
+    }
+    /* max_gray 縺ｮ莉｣蜈･・・縺九ｉ蟋九∪繧九さ繝｡繝ｳ繝医・隱ｭ縺ｿ鬟帙・縺呻ｼ・*/
+    max_gray = 0;
+    while ( max_gray == 0 ){
+        fgets( buffer, MAX_BUFFERSIZE, fp );
+        if ( buffer[0] != '#' )
+            sscanf( buffer, "%d", &max_gray );
+    }
+    /* 繝代Λ繝｡繝ｼ繧ｿ縺ｮ逕ｻ髱｢縺ｸ縺ｮ陦ｨ遉ｺ */
+    printf("讓ｪ縺ｮ逕ｻ邏謨ｰ = %d, 邵ｦ縺ｮ逕ｻ邏謨ｰ = %d\n", width[n], height[n] );
+    printf("譛螟ｧ髫手ｪｿ蛟､ = %d\n",max_gray);
+    if ( width[n] > MAX_IMAGESIZE || height[n] > MAX_IMAGESIZE ){
+        printf("諠ｳ螳壼､ %d x %d 繧定ｶ・∴縺ｦ縺・∪縺兔n", 
+            MAX_IMAGESIZE, MAX_IMAGESIZE);
+        printf("繧ゅ≧蟆代＠蟆上＆縺ｪ逕ｻ蜒上ｒ菴ｿ縺｣縺ｦ縺・∪縺呻ｼ蚕n");
+        exit(1);
+    }
+    if ( max_gray != MAX_BRIGHTNESS ){
+        printf("譛螟ｧ髫手ｪｿ蛟､縺御ｸ埼←蛻・〒縺呻ｼ蚕n");  exit(1);
+    }
+    /* 逕ｻ蜒上ョ繝ｼ繧ｿ繧定ｪｭ縺ｿ霎ｼ繧薙〒逕ｻ蜒冗畑驟榊・縺ｫ莉｣蜈･ */
+    for(y=0;y<height[n];y++)
+        for(x=0;x<width[n];x++)
+            image[n][x][y] = (unsigned char)fgetc( fp );
+    fclose(fp);
+    printf("逕ｻ蜒上・豁｣蟶ｸ縺ｫ隱ｭ縺ｿ霎ｼ縺ｾ繧後∪縺励◆・・n");
+}
+
+/* 髫手ｪｿ逕ｻ蜒上ｒ蜃ｺ蜉帙☆繧矩未謨ｰ*/
+void save_image( int n, char name[] )
+/* n:騾包ｽｻ陷貞・蛻・愾・ｷ・ｽ邉ｻame[]:郢晁ｼ斐＜郢ｧ・､郢晢ｽｫ陷ｷ謳ｾ・ｼ・ｽ""邵ｺ・ｮ邵ｺ・ｨ邵ｺ髦ｪ・ｽ郢ｧ・ｭ郢晢ｽｼ郢晄㈱・ｽ郢晉甥・ｽ陷牙ｹ｢・ｼ・ｽ*/
+/* 騾包ｽｻ陷剃ｸ奇ｿｽ隶難ｽｪ陝ｷ・ｽ・ｼ讙趣ｽｸ・ｦ陝ｷ・ｽ・ｽ邵ｺ譏ｴ・檎ｸｺ讒ｭ・・width[n], height[n] 邵ｺ・ｫ闔会ｽ｣陷茨ｽ･邵ｺ霈費ｽ檎ｸｺ・ｦ邵ｺ・ｽ・狗ｹｧ繧・ｿｽ邵ｺ・ｨ邵ｺ蜷ｶ・・*/
+{
+    char file_name[MAX_FILENAME]; /* 郢晁ｼ斐＜郢ｧ・､郢晢ｽｫ陷ｷ蜥ｲ逡醍ｸｺ・ｮ隴・ｿｽ・ｭ驤ｴ・ｽ陋ｻ・ｽ */
+    FILE *fp; /* 郢晁ｼ斐＜郢ｧ・､郢晢ｽｫ郢晄亢縺・ｹ晢ｽｳ郢ｧ・ｿ */
+    int x, y; /* 郢晢ｽｫ郢晢ｽｼ郢晄懶ｽ､逕ｻ辟・*/
+
+    /* 陷・ｽｺ陷牙ｸ吶Ψ郢ｧ・｡郢ｧ・､郢晢ｽｫ邵ｺ・ｮ郢ｧ・ｪ郢晢ｽｼ郢晏干ﾎｦ */
+    if ( name[0] == '\0' ){
+        printf("蜃ｺ蜉帙ヵ繧｡繧､繝ｫ蜷・(*.pgm) : ");
+        scanf("%s",file_name);
+    } else strcpy( file_name, name );
+    if ( (fp = fopen(file_name, "wb"))==NULL ){
+        printf("繝輔ぃ繧､繝ｫ繧偵が繝ｼ繝励Φ縺ｧ縺阪∪縺帙ｓ縺ｧ縺励◆・蚕n");
+        exit(1);
+    }
+    /* 郢晁ｼ斐＜郢ｧ・､郢晢ｽｫ髫ｴ莨懈肩陝・ｿｽ "P5" 郢ｧ雋橸ｿｽ鬯・ｽｭ邵ｺ・ｫ陷・ｽｺ陷牙ｸ吮・郢ｧ・ｽ */
+    fputs( "P5\n", fp );
+    /* # 邵ｺ・ｧ陝倶ｹ昶穐郢ｧ荵昴＆郢晢ｽ｡郢晢ｽｳ郢晞メ・｡魃会ｽｼ閧ｲ諤宣｡・･陷ｿ・ｯ髢ｭ・ｽ・ｽ・ｽ */
+    fputs( "# Created by Image Processing\n", fp );
+    /* 騾包ｽｻ陷剃ｸ奇ｿｽ隶難ｽｪ陝ｷ・ｽ・ｼ讙趣ｽｸ・ｦ陝ｷ・ｽ・ｽ陷・ｽｺ陷会ｿｽ */
+    fprintf( fp, "%d %d\n", width[n], height[n] );
+    /* 隴崢陞滂ｽｧ鬮ｫ謇具ｽｪ・ｿ陋滂ｽ､邵ｺ・ｮ陷・ｽｺ陷会ｿｽ */
+    fprintf( fp, "%d\n", MAX_BRIGHTNESS );
+    /* 騾包ｽｻ陷剃ｸ翫Ι郢晢ｽｼ郢ｧ・ｿ邵ｺ・ｮ陷・ｽｺ陷会ｿｽ */
+    for(y=0;y<height[n];y++)
+        for(x=0;x<width[n];x++)
+            fputc( image[n][x][y], fp );
+    fclose(fp);
+    printf("逕ｻ蜒上′豁｣蟶ｸ縺ｫ蜃ｺ蜉帙＆繧後∪縺励◆・蚕n");
+}
+
+/* 鬮ｫ謇具ｽｪ・ｿ騾包ｽｻ陷剃ｸ奇ｽ堤ｹｧ・ｳ郢晄鱒・ｽ邵ｺ蜷ｶ・矩ｫ｢・｢隰ｨ・ｰ*/
+void copy_image( int n1, int n2 )
+/* 騾包ｽｻ陷定註o.n1郢ｧ蝣､蛻､陷定註o.n2邵ｺ・ｫ郢ｧ・ｳ郢晄鱒・ｽ邵ｺ蜷ｶ・・*/
+{
+    int x, y; /* 郢晢ｽｫ郢晢ｽｼ郢晄懶ｽ､逕ｻ辟・*/
+
+    /* 隶難ｽｪ陝ｷ・ｽ・ｼ讙趣ｽｸ・ｦ陝ｷ・ｽ・ｽ闔会ｽ｣陷茨ｽ･ */
+    width[n2] = width[n1];    height[n2] = height[n1];
+    /* 鬮ｫ謇具ｽｪ・ｿ郢晢ｿｽ・ｽ郢ｧ・ｿ邵ｺ・ｮ郢ｧ・ｳ郢晄鱒・ｽ */
+    for(y=0;y<height[n1];y++)
+        for(x=0;x<width[n1];x++)
+            image[n2][x][y] = image[n1][x][y];
+}
+
+/* 鬮ｫ謇具ｽｪ・ｿ騾包ｽｻ陷剃ｸ奇ｽ定崕譎・ｄ陋ｹ謔ｶ笘・ｹｧ遏ｩ譛ｪ隰ｨ・ｰ*/
+void init_image( int n, unsigned char value )
+/* 騾包ｽｻ陷定註o.n邵ｺ・ｮ陷茨ｽｨ騾包ｽｻ驍擾ｿｽ邵ｺ・ｮ鬮ｫ謇具ｽｪ・ｿ陋滂ｽ､郢ｧ雋橸ｽｼ・ｷ陋ｻ・ｶ騾ｧ・ｽ竊砺alue(0邵ｲ・ｽ255)邵ｺ・ｫ邵ｺ蜷ｶ・・*/
+{
+    int x, y; /* 郢晢ｽｫ郢晢ｽｼ郢晄懶ｽ､逕ｻ辟・*/
+
+    for(y=0;y<height[n];y++)
+        for(x=0;x<width[n];x++)
+            image[n][x][y] = value;
+}

@@ -1,0 +1,21 @@
+{
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+        "source": "PowerShell",
+        "args": [
+            "-NoExit",
+            "-Command",
+            "chcp 65001"
+            ],
+        }
+    },
+    "files.associations": {
+        "stdlib.h": "c",
+        "pgmlib.h": "c"
+    }
+ /*    "files.associations": {
+        "pgmlib.h": "c"
+    } */
+    
+}
